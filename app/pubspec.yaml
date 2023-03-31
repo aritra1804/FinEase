@@ -41,15 +41,12 @@ dependencies:
   get_storage: ^2.0.3
   google_fonts: ^3.0.1
   introduction_screen: ^3.1.7
+  lottie: ^2.3.1
   pinput: ^2.2.16
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  change_app_package_name: ^1.1.0
+  flutter_launcher_icons: ^0.9.2
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
@@ -57,6 +54,33 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/debug/launcher.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#ffffff"
+#  flutter pub run flutter_launcher_icons:main
+flutter_native_splash:
+  color: "#FFFFFF"
+  #background_image: "assets/background.png"
+  image: "assets/debug/splash_logo.png"
+  color_dark: "#000000"
+  branding: assets/debug/splash_branding_logo.png
+  android_12:
+    image: assets/debug/splash_branding_logo.png
+    icon_background_color: "#FFFFFF"
+    icon_background_color_dark: "#000000"
+
+  #background_image_dark: "assets/dark-background.png"
+  #image_dark: assets/splash-invert.png
+  android: true
+  ios: true
+  #web: false
+  android_gravity: center
+  ios_content_mode: center
+  fullscreen: true
+
 flutter:
 
   # The following line ensures that the Material Icons font is

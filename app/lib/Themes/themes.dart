@@ -6,11 +6,15 @@ import 'package:google_fonts/google_fonts.dart';
 
 extension ThemeExtension on ThemeData {
   Color get colorPrimary => brightness == Brightness.dark
-      ? const Color.fromARGB(193, 193, 255, 220)
-      : const Color.fromARGB(193, 193, 255, 220);
+      ? const Color.fromARGB(217, 148, 177, 244)
+      : const Color.fromARGB(217, 148, 177, 244);
   Color get colorPrimaryDark => brightness == Brightness.dark
-      ? const Color(0xff00631E)
-      : const Color(0xff00631E);
+      ? const Color(0xff1F55D7)
+      : const Color(0xff1F55D7);
+  Color get colorSecondary =>
+      brightness == Brightness.dark ? const Color(0xD5A8E5F1) : const Color(0xD5A8E5F1);
+  Color get colorSecondaryDark =>
+      brightness == Brightness.dark ? const Color(0xff46E0FE) : const Color(0xff46E0FE);
   Color get green => brightness == Brightness.dark
       ? const Color(0xff04EF47)
       : const Color(0xff04EF47);
@@ -55,15 +59,15 @@ extension ThemeExtension on ThemeData {
   Color get materialColor9 => const Color(0xfff694c1);
   Color get materialColorDark9 => const Color(0xff8c0342);
 
-  TextStyle get kTitleTextStyle => GoogleFonts.nunito(
+  TextStyle get kTitleTextStyle => GoogleFonts.sourceSansPro(
       fontWeight: FontWeight.w700, color: btnTextCol, fontSize: 25);
   TextStyle get kSubTitleTextStyle =>
-      GoogleFonts.quicksand(fontSize: 17, fontWeight: FontWeight.w700);
+      GoogleFonts.sourceSansPro(fontSize: 17, fontWeight: FontWeight.w700);
   TextStyle get kSmallTextStyle =>
-      GoogleFonts.nunito(fontWeight: FontWeight.w700, color: btnTextCol);
-  TextStyle get kVerySmallTextStyle => GoogleFonts.nunito(
+      GoogleFonts.sourceSansPro(fontWeight: FontWeight.w700, color: btnTextCol);
+  TextStyle get kVerySmallTextStyle => GoogleFonts.sourceSansPro(
       fontWeight: FontWeight.w700, color: btnTextCol, fontSize: 12);
-  TextStyle get kBigTextStyle => GoogleFonts.nunito(
+  TextStyle get kBigTextStyle => GoogleFonts.sourceSansPro(
       fontWeight: FontWeight.w800, color: btnTextCol, fontSize: 35);
 }
 
