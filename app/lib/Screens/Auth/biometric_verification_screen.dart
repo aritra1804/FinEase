@@ -131,7 +131,9 @@ class BiometricVerificationScreen extends GetView<AuthController> {
                                                         controller
                                                             .confirmPassword
                                                             .text)
-                                                      {}
+                                                      {
+                                                        
+                                                      }
                                                   }
                                               },
                                           icon: Icon(
