@@ -8,10 +8,9 @@ class OnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final introKey = GlobalKey<IntroductionScreenState>();
     return Scaffold(
-      body: SafeArea(child: SingleChildScrollView(child: IntroductionScreen(
-        key: introKey,
+      body: SafeArea(child: SingleChildScrollView(child: Column(children: [
         
-      ))),
+      ],))),
     );
   }
 }

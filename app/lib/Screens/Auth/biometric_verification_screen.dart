@@ -1,22 +1,24 @@
 import 'package:finease/Screens/Auth/auth_controller.dart';
-import 'package:finease/Screens/Auth/residential_page.dart';
+import 'package:finease/Screens/Home/home_page.dart';
 import 'package:finease/Themes/themes.dart';
 import 'package:finease/Utilities/app_bar_widget.dart';
-import 'package:finease/Utilities/custom_sizebox.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
-import 'package:finease/Utilities/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-import '../../Utilities/finease_logo.dart';
+import '../../Utilities/custom_sizebox.dart';
+import '../../Utilities/primary_button.dart';
+import '../../Utilities/text_field.dart';
+import 'package:lottie/lottie.dart';
 
-class RegisterPageScreen extends StatelessWidget {
-  const RegisterPageScreen({super.key});
+class BiometricVerificationScreen extends GetView<AuthController> {
+  const BiometricVerificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put<AuthController>(AuthController());
-    final regSteps = 1;
+    //final controller = Get.put<AuthController>(AuthController());
+    final regSteps = 4;
     return Scaffold(
       appBar: fineaseAppBar(),
       body: SafeArea(
@@ -50,7 +52,7 @@ class RegisterPageScreen extends StatelessWidget {
                   ),
                   sizeBox(5, 0),
                   Text(
-                    'Peronal Details',
+                    'Biometric Verification',
                     style: Get.theme.kMedTitleTextStyle,
                   ),
                   Padding(
@@ -64,62 +66,42 @@ class RegisterPageScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Form(
-                            key: controller.personalFormKey,
+                            key: controller.accFormKey,
                             child: Column(
                               children: [
+                                Obx(() => controller.profileImage.value != null
+                                    ? controller.loading.value
+                                        ? Lottie.asset(
+                                            'assets/images/finease.json')
+                                        : Image.file(
+                                            controller.profileImage.value!)
+                                    : Icon(Icons.account_circle_outlined,
+                                        size: 200,
+                                        color: Get.theme.btnTextCol)),
+                                primaryButton(
+                                    label: 'Upload your profile',
+                                    icon: Icons.upload,
+                                    onTap: () =>
+                                        {controller.pickImage(profile: true)}),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your first name';
+                                        return 'Please enter this field';
                                       }
                                     },
-                                    controller: controller.firstName,
-                                    icon: Icons.person_outlined,
-                                    label: 'First Name'),
+                                    controller: controller.password,
+                                    icon: Icons.key_rounded,
+                                    label: 'Create Password'),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your last name';
+                                        return 'Please enter this field';
                                       }
                                     },
-                                    controller: controller.lastName,
-                                    icon: Icons.person_outlined,
-                                    label: 'Last Name'),
-                                textField(
-                                    validator: (v) {},
-                                    readOnly: true,
-                                    onTap: () async {
-                                      final String selectedDate =
-                                          await controller.pickDate(
-                                              context, 'dd/MM/yyyy');
-                                      controller.dateOfBirth.text =
-                                          selectedDate;
-                                    },
-                                    controller: controller.dateOfBirth,
-                                    icon: Icons.calendar_today_outlined,
-                                    label: 'Date of Birth'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter your email address';
-                                      } else if (!GetUtils.isEmail(v)) {
-                                        return 'Please enter a valid email address';
-                                      }
-                                    },
-                                    controller: controller.emailAddress,
-                                    icon: Icons.email_outlined,
-                                    label: 'Email Address'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter your phone number';
-                                      } else if (!GetUtils.isPhoneNumber(v)) {
-                                        return 'Please enter a valid phone number';
-                                      }
-                                    },
-                                    controller: controller.phoneNumber,
-                                    icon: Icons.phone_android_outlined,
-                                    label: 'Phone Number'),
+                                    obscureText: true,
+                                    controller: controller.confirmPassword,
+                                    icon: Icons.key_outlined,
+                                    label: 'Confirm password'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -128,7 +110,7 @@ class RegisterPageScreen extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(15.0),
                                       child: Text(
-                                        'Residential\nInformation',
+                                        'Account\nCreation',
                                         style: Get.theme.kMedTitleTextStyle,
                                       ),
                                     ),
@@ -140,12 +122,16 @@ class RegisterPageScreen extends StatelessWidget {
                                           color: Get.theme.colorAccent),
                                       child: IconButton(
                                           onPressed: () => {
-                                                if (controller.personalFormKey
-                                                    .currentState!
+                                                if (controller
+                                                    .accFormKey.currentState!
                                                     .validate())
                                                   {
-                                                    Get.to(() =>
-                                                        ResidentialPageScreen())
+                                                    if (controller
+                                                            .password.text ==
+                                                        controller
+                                                            .confirmPassword
+                                                            .text)
+                                                      {}
                                                   }
                                               },
                                           icon: Icon(

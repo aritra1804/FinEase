@@ -6,15 +6,20 @@ import 'package:google_fonts/google_fonts.dart';
 
 extension ThemeExtension on ThemeData {
   Color get colorPrimary => brightness == Brightness.dark
-      ? const Color.fromARGB(217, 148, 177, 244)
+      ? Color(0xD994B1F4)
       : const Color.fromARGB(217, 148, 177, 244);
   Color get colorPrimaryDark => brightness == Brightness.dark
       ? const Color(0xff1F55D7)
       : const Color(0xff1F55D7);
-  Color get colorSecondary =>
-      brightness == Brightness.dark ? const Color(0xD5A8E5F1) : const Color(0xD5A8E5F1);
-  Color get colorSecondaryDark =>
-      brightness == Brightness.dark ? const Color(0xff46E0FE) : const Color(0xff46E0FE);
+  Color get colorSecondary => brightness == Brightness.dark
+      ? const Color(0xD5A8E5F1)
+      : const Color(0xD5A8E5F1);
+  Color get colorSecondaryDark => brightness == Brightness.dark
+      ? const Color(0xff46E0FE)
+      : const Color(0xff46E0FE);
+  Color get colorAccent => brightness == Brightness.dark
+      ? const Color(0xffFFBE55)
+      : const Color(0xffFFBE55);
   Color get green => brightness == Brightness.dark
       ? const Color(0xff04EF47)
       : const Color(0xff04EF47);
@@ -61,8 +66,10 @@ extension ThemeExtension on ThemeData {
 
   TextStyle get kTitleTextStyle => GoogleFonts.sourceSansPro(
       fontWeight: FontWeight.w700, color: btnTextCol, fontSize: 25);
-  TextStyle get kSubTitleTextStyle =>
-      GoogleFonts.sourceSansPro(fontSize: 17, fontWeight: FontWeight.w700);
+  TextStyle get kSubTitleTextStyle => GoogleFonts.sourceSansPro(
+      fontSize: 17, color: btnTextCol, fontWeight: FontWeight.w700);
+  TextStyle get kMedTitleTextStyle => GoogleFonts.sourceSansPro(
+      fontSize: 22, color: btnTextCol, fontWeight: FontWeight.w700);
   TextStyle get kSmallTextStyle =>
       GoogleFonts.sourceSansPro(fontWeight: FontWeight.w700, color: btnTextCol);
   TextStyle get kVerySmallTextStyle => GoogleFonts.sourceSansPro(

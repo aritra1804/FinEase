@@ -1,8 +1,12 @@
+import 'package:finease/Screens/Auth/biometric_verification_screen.dart';
 import 'package:finease/Screens/Auth/auth_controller.dart';
 import 'package:finease/Screens/Auth/residential_page.dart';
 import 'package:finease/Themes/themes.dart';
 import 'package:finease/Utilities/app_bar_widget.dart';
 import 'package:finease/Utilities/custom_sizebox.dart';
+import 'package:finease/Utilities/primary_button.dart';
+import 'package:finease/Utilities/snackbar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:finease/Utilities/text_field.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +14,13 @@ import 'package:get/get.dart';
 
 import '../../Utilities/finease_logo.dart';
 
-class RegisterPageScreen extends StatelessWidget {
-  const RegisterPageScreen({super.key});
+class LegalPageScreen extends GetView<AuthController> {
+  const LegalPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put<AuthController>(AuthController());
-    final regSteps = 1;
+    //final controller = Get.put<AuthController>(AuthController());
+    final regSteps = 3;
     return Scaffold(
       appBar: fineaseAppBar(),
       body: SafeArea(
@@ -50,7 +54,7 @@ class RegisterPageScreen extends StatelessWidget {
                   ),
                   sizeBox(5, 0),
                   Text(
-                    'Peronal Details',
+                    'Legal Documents',
                     style: Get.theme.kMedTitleTextStyle,
                   ),
                   Padding(
@@ -64,62 +68,28 @@ class RegisterPageScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Form(
-                            key: controller.personalFormKey,
+                            key: controller.govtFormKey,
                             child: Column(
                               children: [
+                                Obx(() => controller.govtIdImage.value != null
+                                    ? Image.file(controller.govtIdImage.value!)
+                                    : SvgPicture.asset(
+                                        'assets/images/card_placeholder.svg',
+                                        height: 200,
+                                      )),
+                                primaryButton(
+                                    label: 'Upload your Govt. ID',
+                                    icon: Icons.upload,
+                                    onTap: () => {controller.pickImage()}),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your first name';
+                                        return 'Please enter this field';
                                       }
                                     },
-                                    controller: controller.firstName,
-                                    icon: Icons.person_outlined,
-                                    label: 'First Name'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter your last name';
-                                      }
-                                    },
-                                    controller: controller.lastName,
-                                    icon: Icons.person_outlined,
-                                    label: 'Last Name'),
-                                textField(
-                                    validator: (v) {},
-                                    readOnly: true,
-                                    onTap: () async {
-                                      final String selectedDate =
-                                          await controller.pickDate(
-                                              context, 'dd/MM/yyyy');
-                                      controller.dateOfBirth.text =
-                                          selectedDate;
-                                    },
-                                    controller: controller.dateOfBirth,
-                                    icon: Icons.calendar_today_outlined,
-                                    label: 'Date of Birth'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter your email address';
-                                      } else if (!GetUtils.isEmail(v)) {
-                                        return 'Please enter a valid email address';
-                                      }
-                                    },
-                                    controller: controller.emailAddress,
-                                    icon: Icons.email_outlined,
-                                    label: 'Email Address'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter your phone number';
-                                      } else if (!GetUtils.isPhoneNumber(v)) {
-                                        return 'Please enter a valid phone number';
-                                      }
-                                    },
-                                    controller: controller.phoneNumber,
-                                    icon: Icons.phone_android_outlined,
-                                    label: 'Phone Number'),
+                                    controller: controller.govtID,
+                                    icon: Icons.payment_outlined,
+                                    label: 'Govt. ID Number'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -128,7 +98,7 @@ class RegisterPageScreen extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(15.0),
                                       child: Text(
-                                        'Residential\nInformation',
+                                        'Biometric\nVerification',
                                         style: Get.theme.kMedTitleTextStyle,
                                       ),
                                     ),
@@ -139,15 +109,26 @@ class RegisterPageScreen extends StatelessWidget {
                                               BorderRadius.circular(20),
                                           color: Get.theme.colorAccent),
                                       child: IconButton(
-                                          onPressed: () => {
-                                                if (controller.personalFormKey
-                                                    .currentState!
-                                                    .validate())
-                                                  {
-                                                    Get.to(() =>
-                                                        ResidentialPageScreen())
-                                                  }
-                                              },
+                                          onPressed: () {
+                                            if (controller
+                                                .govtFormKey.currentState!
+                                                .validate()) {
+                                              if (controller
+                                                      .govtIdImage.value !=
+                                                  null) {
+                                                Get.to(() =>
+                                                    BiometricVerificationScreen());
+                                              } else {
+                                                setSnackBar('Error:',
+                                                    'Please upload the document image',
+                                                    icon: Icon(
+                                                      Icons
+                                                          .warning_amber_rounded,
+                                                      color: Colors.red,
+                                                    ));
+                                              }
+                                            }
+                                          },
                                           icon: Icon(
                                             Icons.arrow_forward_ios_rounded,
                                             color: Get.theme.btnTextCol,

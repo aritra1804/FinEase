@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:finease/Themes/themes.dart';
 
-Widget primaryButton({required String label,required IconData icon,required VoidCallback onTap}) {
+Widget primaryButton(
+    {required String label,
+    required IconData icon,
+    required VoidCallback onTap}) {
   return Padding(
-    padding: const EdgeInsets.all(22.0),
+    padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 10.0),
     child: TextButton.icon(
-      onPressed:onTap,
+      onPressed: onTap,
       style: TextButton.styleFrom(
         foregroundColor: Get.theme.colorPrimaryDark,
         padding: const EdgeInsets.all(15),
@@ -21,7 +24,7 @@ Widget primaryButton({required String label,required IconData icon,required Void
         icon,
       ),
       label: Text(
-       label,
+        label,
         style: GoogleFonts.quicksand(
           fontWeight: FontWeight.w600,
           fontSize: 15,

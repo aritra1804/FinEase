@@ -8,10 +8,10 @@ Widget textField(
     required IconData icon,
     TextInputType? keyboard,
     Function()? onTap,
-    bool obscureText=false,
-    bool enableSuggestions=true,
-    bool autoCorrect=true,
-    bool readOnly=false,
+    bool obscureText = false,
+    bool enableSuggestions = true,
+    bool autoCorrect = true,
+    bool readOnly = false,
     required String label}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
@@ -28,6 +28,11 @@ Widget textField(
       autocorrect: autoCorrect,
       controller: controller,
       decoration: InputDecoration(
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none),
+        filled: true,
+        fillColor: Colors.white,
         prefixIcon: Icon(
           icon,
           // color: Get.theme.btnTextCol,
@@ -37,9 +42,6 @@ Widget textField(
         //   color: Get.theme.btnTextCol,
         // ),
         labelText: label,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: Get.theme.curveBG)),
       ),
     ),
   );

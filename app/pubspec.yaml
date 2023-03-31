@@ -37,12 +37,18 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.2.15
   flutter_svg: ^1.1.6
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
   get: ^4.6.5
   get_storage: ^2.0.3
   google_fonts: ^3.0.1
+  image_picker: ^0.8.7+1
+  intl: ^0.18.0
   introduction_screen: ^3.1.7
   lottie: ^2.3.1
+  permission_handler: ^10.2.0
   pinput: ^2.2.16
+  step_progress_indicator: ^1.0.2
 
 dev_dependencies:
   change_app_package_name: ^1.1.0

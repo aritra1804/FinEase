@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:finease/Screens/Auth/registeration_page.dart';
 import 'package:finease/Screens/Home/home_page.dart';
 import 'package:finease/Screens/OnBoarding/onboarding_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,6 +83,6 @@ final appdata = GetStorage();
 
 Widget checkUser() {
   return FirebaseAuth.instance.currentUser == null
-      ? const OnBoardingScreen()
+      ? const RegisterPageScreen()
       : const HomePageScreen();
 }

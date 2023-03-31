@@ -1,22 +1,20 @@
 import 'package:finease/Screens/Auth/auth_controller.dart';
-import 'package:finease/Screens/Auth/residential_page.dart';
+import 'package:finease/Screens/Auth/legal_page.dart';
 import 'package:finease/Themes/themes.dart';
-import 'package:finease/Utilities/app_bar_widget.dart';
-import 'package:finease/Utilities/custom_sizebox.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
-import 'package:finease/Utilities/text_field.dart';
+import 'package:finease/Utilities/finease_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-import '../../Utilities/finease_logo.dart';
+import '../../Utilities/app_bar_widget.dart';
+import '../../Utilities/custom_sizebox.dart';
+import '../../Utilities/text_field.dart';
 
-class RegisterPageScreen extends StatelessWidget {
-  const RegisterPageScreen({super.key});
-
+class ResidentialPageScreen extends GetView<AuthController> {
+  const ResidentialPageScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put<AuthController>(AuthController());
-    final regSteps = 1;
+    final regSteps = 2;
     return Scaffold(
       appBar: fineaseAppBar(),
       body: SafeArea(
@@ -50,7 +48,7 @@ class RegisterPageScreen extends StatelessWidget {
                   ),
                   sizeBox(5, 0),
                   Text(
-                    'Peronal Details',
+                    'Residential Details',
                     style: Get.theme.kMedTitleTextStyle,
                   ),
                   Padding(
@@ -64,7 +62,7 @@ class RegisterPageScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Form(
-                            key: controller.personalFormKey,
+                            key: controller.residentialFormKey,
                             child: Column(
                               children: [
                                 textField(
@@ -73,62 +71,53 @@ class RegisterPageScreen extends StatelessWidget {
                                         return 'Please enter your first name';
                                       }
                                     },
-                                    controller: controller.firstName,
-                                    icon: Icons.person_outlined,
-                                    label: 'First Name'),
+                                    controller: controller.street,
+                                    icon: Icons.home,
+                                    label: 'Street Address'),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your last name';
+                                        return 'Please enter your city';
                                       }
                                     },
-                                    controller: controller.lastName,
-                                    icon: Icons.person_outlined,
-                                    label: 'Last Name'),
-                                textField(
-                                    validator: (v) {},
-                                    readOnly: true,
-                                    onTap: () async {
-                                      final String selectedDate =
-                                          await controller.pickDate(
-                                              context, 'dd/MM/yyyy');
-                                      controller.dateOfBirth.text =
-                                          selectedDate;
-                                    },
-                                    controller: controller.dateOfBirth,
-                                    icon: Icons.calendar_today_outlined,
-                                    label: 'Date of Birth'),
+                                    controller: controller.city,
+                                    icon: Icons.map_outlined,
+                                    label: 'City'),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your email address';
-                                      } else if (!GetUtils.isEmail(v)) {
-                                        return 'Please enter a valid email address';
+                                        return 'Please enter your State';
                                       }
                                     },
-                                    controller: controller.emailAddress,
-                                    icon: Icons.email_outlined,
-                                    label: 'Email Address'),
+                                    controller: controller.state,
+                                    icon: Icons.location_on_outlined,
+                                    label: 'State'),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your phone number';
-                                      } else if (!GetUtils.isPhoneNumber(v)) {
-                                        return 'Please enter a valid phone number';
+                                        return 'Please enter your Country';
                                       }
                                     },
-                                    controller: controller.phoneNumber,
-                                    icon: Icons.phone_android_outlined,
-                                    label: 'Phone Number'),
+                                    controller: controller.country,
+                                    icon: Icons.flag_outlined,
+                                    label: 'Country'),
+                                textField(
+                                    validator: (v) {
+                                      if (v!.isEmpty) {
+                                        return 'Please enter your Zip Code';
+                                      }
+                                    },
+                                    controller: controller.zipcode,
+                                    icon: Icons.my_location_outlined,
+                                    label: 'zipcode'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
-                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(15.0),
                                       child: Text(
-                                        'Residential\nInformation',
+                                        'Legal\nInformation',
                                         style: Get.theme.kMedTitleTextStyle,
                                       ),
                                     ),
@@ -140,13 +129,12 @@ class RegisterPageScreen extends StatelessWidget {
                                           color: Get.theme.colorAccent),
                                       child: IconButton(
                                           onPressed: () => {
-                                                if (controller.personalFormKey
+                                                if (controller
+                                                    .residentialFormKey
                                                     .currentState!
                                                     .validate())
-                                                  {
-                                                    Get.to(() =>
-                                                        ResidentialPageScreen())
-                                                  }
+                                                  Get.to(() =>
+                                                      const LegalPageScreen())
                                               },
                                           icon: Icon(
                                             Icons.arrow_forward_ios_rounded,
