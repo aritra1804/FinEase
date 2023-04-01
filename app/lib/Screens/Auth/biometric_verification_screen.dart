@@ -1,7 +1,9 @@
 import 'package:finease/Screens/Auth/auth_controller.dart';
+import 'package:finease/Screens/Auth/email_sent_page.dart';
 import 'package:finease/Screens/Home/home_page.dart';
 import 'package:finease/Themes/themes.dart';
 import 'package:finease/Utilities/app_bar_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import '../../Utilities/custom_sizebox.dart';
 import '../../Utilities/primary_button.dart';
+import '../../Utilities/snackbar.dart';
 import '../../Utilities/text_field.dart';
 import 'package:lottie/lottie.dart';
 
@@ -107,9 +110,46 @@ class BiometricVerificationScreen extends GetView<AuthController> {
                                                     .accFormKey.currentState!
                                                     .validate())
                                                   {
-                                                   if(controller.profileImage.value!=null){
-                                                    
-                                                   }
+                                                    if (controller.profileImage
+                                                            .value !=
+                                                        null)
+                                                      {
+                                                        controller
+                                                            .verifyBiometric()
+                                                            .then(
+                                                                (value) async =>
+                                                                    {
+                                                                      if (value)
+                                                                        {
+                                                                          controller
+                                                                              .sendData(),
+                                                                          await FirebaseAuth
+                                                                              .instance
+                                                                              .currentUser!
+                                                                              .sendEmailVerification(),
+                                                                          await FirebaseAuth
+                                                                              .instance
+                                                                              .sendPasswordResetEmail(email: FirebaseAuth.instance.currentUser!.email!),
+                                                                          setSnackBar(
+                                                                              'Biometric verification successful',
+                                                                              'We have sent you a verification code to your email address and password reset email'),
+                                                                          controller
+                                                                              .loading
+                                                                              .value = false,
+                                                                          Get.offAll(
+                                                                              EmailSentPage())
+                                                                        }
+                                                                      else
+                                                                        {
+                                                                          controller
+                                                                              .loading
+                                                                              .value = false,
+                                                                          setSnackBar(
+                                                                              'Biometric verification failed',
+                                                                              'Please try again'),
+                                                                        }
+                                                                    })
+                                                      }
                                                   }
                                               },
                                           icon: Icon(

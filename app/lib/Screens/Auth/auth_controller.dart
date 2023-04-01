@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:finease/Models/pic_model.dart';
 import 'package:finease/Models/user_data.dart';
 import 'package:finease/Utilities/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,9 @@ class AuthController extends GetxController {
   final state = TextEditingController();
   final country = TextEditingController();
   final zipcode = TextEditingController();
+
+  final accountno = TextEditingController();
+  final mpin = TextEditingController();
 
   final govtID = TextEditingController();
 
@@ -85,7 +89,7 @@ class AuthController extends GetxController {
       uploadImage('profile', profileImage.value!);
     } else {
       govtIdImage.value = File(pickedFile.path);
-      uploadImage('photoproof', govtIdImage.value!);
+      uploadImage('photoProof', govtIdImage.value!);
     }
   }
 
@@ -153,9 +157,11 @@ class AuthController extends GetxController {
       );
       final apiUrl = "${Globals.APIURL}/users/register";
       final response = await post(Uri.parse(apiUrl), body: data.toJson());
-      var responseBody = jsonDecode(response.body);
-      var accessToken = responseBody['data']['accessToken'];
-      GetStorage().write('accessToken', accessToken);
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.body);
+        var accessToken = responseBody['data']['accessToken'];
+        GetStorage().write('accessToken', accessToken);
+      }
     } catch (e) {
       print(e);
     }
@@ -163,16 +169,20 @@ class AuthController extends GetxController {
 
   Future<void> uploadImage(String type, File file) async {
     final bytes = await file.readAsBytesSync();
-    String image = "data:image/jpeg;base64," + base64Encode(bytes);
+    String image = base64Encode(bytes);
     print(image);
     print(FirebaseAuth.instance.currentUser!.uid);
     try {
       final apiUrl = "${Globals.APIURL}/image/add";
-      final response = await post(Uri.parse(apiUrl), body: {
-        'photoName': type,
-        "userId": FirebaseAuth.instance.currentUser!.uid,
-        'image': image
-      });
+      final response = await post(Uri.parse(apiUrl),
+          headers: {
+            "content-type": "application/json; charset=utf-8",
+          },
+          body: jsonEncode(<String, String>{
+            "userId": FirebaseAuth.instance.currentUser!.uid,
+            "image": image,
+            "photoName": type,
+          }));
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
         print(responseBody);
@@ -182,25 +192,38 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> verifyBiometric() async {
+  Future<bool> verifyBiometric() async {
     try {
       final apiUrl = Globals.BIOURL;
-      final response = await post(Uri.parse(apiUrl), body: {
-        "body": {
-          "userId": FirebaseAuth.instance.currentUser!.uid,
-        }
-      });
+      final user = UserVerify(
+        userId: FirebaseAuth.instance.currentUser!.uid,
+      );
+      final response = await post(Uri.parse(apiUrl),
+          body: jsonEncode(<String, String>{
+            "body": FirebaseAuth.instance.currentUser!.uid,
+          }));
       var responseBody = jsonDecode(response.body);
-      var status = responseBody['Status'];
-      if (status == true) {
-        biometricVerified.value = 'success';
-      } else {
-        biometricVerified.value = 'failed';
-        setSnackBar('ERROR: ',
-            'Invalid match please try again by reuploading the right image');
+      debugPrint(responseBody.toString());
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.body);
+        debugPrint(responseBody);
+        // var status = responseBody[0].Status;
+        debugPrint(responseBody[0].Status);
+        var status = true;
+        if (status == true) {
+          biometricVerified.value = 'success';
+          return true;
+        } else {
+          biometricVerified.value = 'failed';
+          setSnackBar('ERROR: ',
+              'Invalid match please try again by reuploading the right image');
+          return false;
+        }
       }
+      return false;
     } catch (e) {
       print(e);
+      return false;
     }
   }
 

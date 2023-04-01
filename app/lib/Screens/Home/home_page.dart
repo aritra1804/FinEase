@@ -100,6 +100,10 @@ class HomePageScreen extends StatelessWidget {
           ),
         ),
         sizeBox(50, 0),
+        Text(
+          'Service call OTP: 456887',
+          style: Get.theme.kSubTitleTextStyle,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: Card(
@@ -195,7 +199,7 @@ class HomePageScreen extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // CarouselSlider(
         //   options: CarouselOptions(
         //     height: 180.0,
