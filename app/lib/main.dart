@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
 }
 
 Widget checkUser() {
-  return FirebaseAuth.instance.currentUser!.emailVerified 
-      ? const RegisterPageScreen()
+  return FirebaseAuth.instance.currentUser!=null &&FirebaseAuth.instance.currentUser!.emailVerified
+      ? const HomePageScreen()
       : const OnBoardingScreen();
 }

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Utilities/finease_logo.dart';
+import '../Home/home_page.dart';
 
 class LoginPageScreen extends StatelessWidget {
   const LoginPageScreen({super.key});
@@ -41,28 +42,28 @@ class LoginPageScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Form(
-                            key: controller.personalFormKey,
+                            key: controller.loginKey,
                             child: Column(
                               children: [
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your Account Number';
+                                        return 'Please enter your Email address';
                                       }
                                     },
-                                    controller: controller.accountno,
-                                    icon: Icons.card_giftcard,
-                                    label: 'Account Number'),
+                                    controller: controller.emailAddress,
+                                    icon: Icons.email_outlined,
+                                    label: 'Email Address'),
                                 textField(
                                     validator: (v) {
                                       if (v!.isEmpty) {
-                                        return 'Please enter your MPIN';
+                                        return 'Please enter your password';
                                       }
                                     },
-                                    controller: controller.mpin,
-                                    icon: Icons.person_outlined,
-                                    label: 'MPIN'),
-                                
+                                    controller: controller.password,
+                                    obscureText: true,
+                                    icon: Icons.key_rounded,
+                                    label: 'Password'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -71,7 +72,7 @@ class LoginPageScreen extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(15.0),
                                       child: Text(
-                                        'Residential\nInformation',
+                                        'Login\nto your account',
                                         style: Get.theme.kMedTitleTextStyle,
                                       ),
                                     ),
@@ -82,16 +83,7 @@ class LoginPageScreen extends StatelessWidget {
                                               BorderRadius.circular(20),
                                           color: Get.theme.colorAccent),
                                       child: IconButton(
-                                          onPressed: () => {
-                                                if (controller.personalFormKey
-                                                    .currentState!
-                                                    .validate())
-                                                  {
-                                                    controller.createAccount().then(
-                                                        (value) => Get.to(() =>
-                                                            const ResidentialPageScreen()))
-                                                  }
-                                              },
+                                          onPressed: () => {controller.login()},
                                           icon: Icon(
                                             Icons.arrow_forward_ios_rounded,
                                             color: Get.theme.btnTextCol,

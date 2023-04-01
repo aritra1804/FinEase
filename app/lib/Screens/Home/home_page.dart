@@ -1,4 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:finease/Device/radar_screen.dart';
+import 'package:finease/Screens/Home/home_controller.dart';
 import 'package:finease/Themes/themes.dart';
 import 'package:finease/Utilities/custom_sizebox.dart';
 import 'package:finease/Utilities/finease_logo.dart';
@@ -12,6 +14,7 @@ class HomePageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put<HomeController>(HomeController());
     return Scaffold(
         //appBar: fineaseAppBar(),
         body: SafeArea(
@@ -101,7 +104,7 @@ class HomePageScreen extends StatelessWidget {
         ),
         sizeBox(50, 0),
         Text(
-          'Service call OTP: 456887',
+          'Service call OTP: ${controller.r}',
           style: Get.theme.kSubTitleTextStyle,
         ),
         Padding(
@@ -155,7 +158,7 @@ class HomePageScreen extends StatelessWidget {
                       color: Get.theme.colorPrimaryDark,
                       borderRadius: BorderRadius.circular(15)),
                   child: IconButton(
-                      onPressed: () => {},
+                      onPressed: () => {Get.to(()=>RadarScreen())},
                       icon: Icon(
                         Icons.qr_code_2_rounded,
                         color: Get.theme.colorSecondary,

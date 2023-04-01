@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:finease/Models/pic_model.dart';
 import 'package:finease/Models/user_data.dart';
+import 'package:finease/Screens/Home/home_page.dart';
 import 'package:finease/Utilities/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +43,7 @@ class AuthController extends GetxController {
   final residentialFormKey = GlobalKey<FormState>();
   final govtFormKey = GlobalKey<FormState>();
   final accFormKey = GlobalKey<FormState>();
+  final loginKey = GlobalKey<FormState>();
 
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
@@ -206,10 +208,9 @@ class AuthController extends GetxController {
       debugPrint(responseBody.toString());
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
-        debugPrint(responseBody);
-        // var status = responseBody[0].Status;
-        debugPrint(responseBody[0].Status);
-        var status = true;
+        // debugPrint(responseBody.toString());
+        bool status = responseBody['Status'];
+        debugPrint(status.toString());
         if (status == true) {
           biometricVerified.value = 'success';
           return true;
@@ -254,6 +255,21 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> login() async{
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailAddress.text,
+        password: password.text,
+      ).then((value) => Get.off(()=>const HomePageScreen()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setSnackBar('Auth Error: ', 'No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        setSnackBar('Auth Error: ', 'Wrong password provided for that user.');
+      }
     }
   }
 
