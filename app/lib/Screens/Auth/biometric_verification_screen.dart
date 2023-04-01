@@ -83,25 +83,6 @@ class BiometricVerificationScreen extends GetView<AuthController> {
                                     icon: Icons.upload,
                                     onTap: () =>
                                         {controller.pickImage(profile: true)}),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter this field';
-                                      }
-                                    },
-                                    controller: controller.password,
-                                    icon: Icons.key_rounded,
-                                    label: 'Create Password'),
-                                textField(
-                                    validator: (v) {
-                                      if (v!.isEmpty) {
-                                        return 'Please enter this field';
-                                      }
-                                    },
-                                    obscureText: true,
-                                    controller: controller.confirmPassword,
-                                    icon: Icons.key_outlined,
-                                    label: 'Confirm password'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -126,14 +107,9 @@ class BiometricVerificationScreen extends GetView<AuthController> {
                                                     .accFormKey.currentState!
                                                     .validate())
                                                   {
-                                                    if (controller
-                                                            .password.text ==
-                                                        controller
-                                                            .confirmPassword
-                                                            .text)
-                                                      {
-                                                        
-                                                      }
+                                                   if(controller.profileImage.value!=null){
+                                                    
+                                                   }
                                                   }
                                               },
                                           icon: Icon(

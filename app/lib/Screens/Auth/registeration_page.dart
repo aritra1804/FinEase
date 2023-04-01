@@ -120,6 +120,15 @@ class RegisterPageScreen extends StatelessWidget {
                                     controller: controller.phoneNumber,
                                     icon: Icons.phone_android_outlined,
                                     label: 'Phone Number'),
+                                textField(
+                                    validator: (v) {
+                                      if (v!.isEmpty) {
+                                        return 'Please enter this field';
+                                      }
+                                    },
+                                    controller: controller.gender,
+                                    icon: Icons.male_outlined,
+                                    label: 'Gender'),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -144,8 +153,9 @@ class RegisterPageScreen extends StatelessWidget {
                                                     .currentState!
                                                     .validate())
                                                   {
-                                                    Get.to(() =>
-                                                        ResidentialPageScreen())
+                                                    controller.createAccount().then(
+                                                        (value) => Get.to(() =>
+                                                            const ResidentialPageScreen()))
                                                   }
                                               },
                                           icon: Icon(

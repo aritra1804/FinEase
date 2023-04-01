@@ -22,9 +22,9 @@ void main() {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  //   await FirebaseAppCheck.instance.activate(
-  //   androidProvider: AndroidProvider.debug,
-  // );
+    //   await FirebaseAppCheck.instance.activate(
+    //   androidProvider: AndroidProvider.debug,
+    // );
     await GetStorage.init();
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     //     statusBarColor:
@@ -53,8 +53,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({super.key});
-final appdata = GetStorage();
+  MyApp({super.key});
+  final appdata = GetStorage();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ final appdata = GetStorage();
       theme: Themes.light,
       darkTheme: Themes.dark,
       themeMode: ThemeService().theme,
-      
+
       debugShowCheckedModeBanner: false,
       // getPages: [
       //   GetPage(name: '/', page: () => WebStrakeApp()),
@@ -79,10 +79,8 @@ final appdata = GetStorage();
   }
 }
 
-
-
 Widget checkUser() {
-  return FirebaseAuth.instance.currentUser == null
+  return FirebaseAuth.instance.currentUser!.emailVerified 
       ? const RegisterPageScreen()
-      : const HomePageScreen();
+      : const OnBoardingScreen();
 }

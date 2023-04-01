@@ -117,11 +117,11 @@ class LegalPageScreen extends GetView<AuthController> {
                                                       .govtIdImage.value !=
                                                   null) {
                                                 Get.to(() =>
-                                                    BiometricVerificationScreen());
+                                                    const BiometricVerificationScreen());
                                               } else {
                                                 setSnackBar('Error:',
                                                     'Please upload the document image',
-                                                    icon: Icon(
+                                                    icon: const Icon(
                                                       Icons
                                                           .warning_amber_rounded,
                                                       color: Colors.red,

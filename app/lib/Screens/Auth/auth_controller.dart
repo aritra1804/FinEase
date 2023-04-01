@@ -1,13 +1,22 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:finease/Models/user_data.dart';
 import 'package:finease/Utilities/snackbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart';
+import 'package:finease/globals.dart';
 
 class AuthController extends GetxController {
   final firstName = TextEditingController();
@@ -15,6 +24,7 @@ class AuthController extends GetxController {
   final dateOfBirth = TextEditingController();
   final emailAddress = TextEditingController();
   final phoneNumber = TextEditingController();
+  final gender = TextEditingController();
 
   final street = TextEditingController();
   final city = TextEditingController();
@@ -23,7 +33,6 @@ class AuthController extends GetxController {
   final zipcode = TextEditingController();
 
   final govtID = TextEditingController();
-  final pancard = TextEditingController();
 
   final personalFormKey = GlobalKey<FormState>();
   final residentialFormKey = GlobalKey<FormState>();
@@ -36,8 +45,8 @@ class AuthController extends GetxController {
   var loading = false.obs;
   var biometricVerified = 'none'.obs;
 
-  var govtIdImage =Rx<File?>(null);
-  var profileImage =Rx<File?>(null);
+  var govtIdImage = Rx<File?>(null);
+  var profileImage = Rx<File?>(null);
 
   Future<bool> requestLocation() async {
     LocationPermission permission;
@@ -54,23 +63,29 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> pickImage({bool profile=false}) async {
+  Future<void> pickImage({bool profile = false}) async {
     final permissionStatus = await Permission.storage.request();
     if (permissionStatus != PermissionStatus.granted) {
-      setSnackBar('Error: permission denied', 'We need your storage access to upload the document',icon: const Icon(Icons.warning_amber_rounded));
+      setSnackBar('Error: permission denied',
+          'We need your storage access to upload the document',
+          icon: const Icon(Icons.warning_amber_rounded));
       return;
     }
 
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile == null) {
-     setSnackBar('Error: selected none', 'Please upload the image',icon: const Icon(Icons.warning_amber_rounded));
+      setSnackBar('Error: selected none', 'Please upload the image',
+          icon: const Icon(Icons.warning_amber_rounded));
       return;
     }
 
-    if(profile){
+    if (profile) {
       profileImage.value = File(pickedFile.path);
-    }else {
+      uploadImage('profile', profileImage.value!);
+    } else {
       govtIdImage.value = File(pickedFile.path);
+      uploadImage('photoproof', govtIdImage.value!);
     }
   }
 
@@ -115,6 +130,107 @@ class AuthController extends GetxController {
       return formatted;
     } else {
       return '';
+    }
+  }
+
+  Future<void> sendData() async {
+    try {
+      final data = UserData(
+        firstName: firstName.text,
+        lastName: lastName.text,
+        DOB: dateOfBirth.text,
+        email: emailAddress.text,
+        phone: phoneNumber.text,
+        street: street.text,
+        city: city.text,
+        state: state.text,
+        country: country.text,
+        pincode: zipcode.text,
+        governmentIdNumber: govtID.text,
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        gender: gender.text,
+        token: await FirebaseMessaging.instance.getToken(),
+      );
+      final apiUrl = "${Globals.APIURL}/users/register";
+      final response = await post(Uri.parse(apiUrl), body: data.toJson());
+      var responseBody = jsonDecode(response.body);
+      var accessToken = responseBody['data']['accessToken'];
+      GetStorage().write('accessToken', accessToken);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> uploadImage(String type, File file) async {
+    final bytes = await file.readAsBytesSync();
+    String image = "data:image/jpeg;base64," + base64Encode(bytes);
+    print(image);
+    print(FirebaseAuth.instance.currentUser!.uid);
+    try {
+      final apiUrl = "${Globals.APIURL}/image/add";
+      final response = await post(Uri.parse(apiUrl), body: {
+        'photoName': type,
+        "userId": FirebaseAuth.instance.currentUser!.uid,
+        'image': image
+      });
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.body);
+        print(responseBody);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> verifyBiometric() async {
+    try {
+      final apiUrl = Globals.BIOURL;
+      final response = await post(Uri.parse(apiUrl), body: {
+        "body": {
+          "userId": FirebaseAuth.instance.currentUser!.uid,
+        }
+      });
+      var responseBody = jsonDecode(response.body);
+      var status = responseBody['Status'];
+      if (status == true) {
+        biometricVerified.value = 'success';
+      } else {
+        biometricVerified.value = 'failed';
+        setSnackBar('ERROR: ',
+            'Invalid match please try again by reuploading the right image');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  String generatePassword() {
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random.secure();
+    return String.fromCharCodes(Iterable.generate(
+        8, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
+  }
+
+  Future<void> createAccount() async {
+    loading.value = true;
+    // await Future.delayed(const Duration(seconds: 2));
+    // setSnackBar('Success', 'Account created successfully');
+    try {
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailAddress.text,
+        password: generatePassword(),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        setSnackBar('Auth Error: ', 'The password provided is too weak');
+      } else if (e.code == 'email-already-in-use') {
+        setSnackBar(
+            'Auth Error: ', 'The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
