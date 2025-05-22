@@ -20,6 +20,10 @@
 
 - **Secure Authentication**  
   OAuth2 integration with Barclays’ identity platform, JWT-backed sessions, and secure password reset flows.
+  
+- **Secure Identity Verification** 
+
+  Integrated a facial recognition model to match the user's live photo with their ID photo, enhancing account security and fraud prevention within the Barclays app.
 
 - **Offline Mode**  
   Cached transactions are stored locally and automatically synced to Barclays’ servers once connectivity is restored.
